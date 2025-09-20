@@ -1,4 +1,4 @@
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { UnprocessableEntityException, ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -9,25 +9,35 @@ dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+      exceptionFactory: (errors) => {
+        const formattedErrors = errors.map((err) => ({
+          field: err.property,
+          error: Object.values(err.constraints ?? {}).join(', '),
+        }));
+        return new UnprocessableEntityException(formattedErrors);
+      },
+    }),
+  );
 
-  // Config declarations
   const configService = app.get(ConfigService);
 
-  // Api configuration
   app.setGlobalPrefix('');
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
   });
 
-  // Cors configuration
   app.enableCors({ origin: '*' });
 
-  // Swagger configuration
   const config = new DocumentBuilder()
       .setTitle('Ticket System API')
-      .setDescription('APIs for Ticket System')
+      .setDescription('API for Ticket System')
       .setVersion('1.0')
       .addBearerAuth(
         {

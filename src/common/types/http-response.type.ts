@@ -2,14 +2,9 @@ import { HttpStatus } from '@nestjs/common';
 
 import { TPagination } from './pagination.type';
 
-interface Message {
-  th: string;
-  en: string;
-}
-
 export class BaseHttpResponse {
   statusCode: HttpStatus;
-  message: Message;
+  message: string;
 
   constructor(partial: Partial<BaseHttpResponse>) {
     Object.assign(this, partial);
