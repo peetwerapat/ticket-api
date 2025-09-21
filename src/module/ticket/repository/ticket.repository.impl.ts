@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '../../prisma/service/prisma.service';
 import { CreateTicketDto } from '../dto/create-ticket.dto';
 import { FindAllQuery } from '../dto/find-all-query.dto';
 import { UpdateTicketDto } from '../dto/update-ticket.dto';

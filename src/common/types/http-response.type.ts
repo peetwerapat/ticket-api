@@ -17,8 +17,8 @@ export interface HttpResponseType<T> extends BaseHttpResponse {
 }
 
 export class HttpResponse<T> extends BaseHttpResponse {
-  private readonly data: T;
-  private readonly pagination: TPagination;
+  data: T;
+  pagination: TPagination;
 
   constructor({ statusCode, message, data, pagination }: HttpResponseType<T>) {
     super({ statusCode, message });
